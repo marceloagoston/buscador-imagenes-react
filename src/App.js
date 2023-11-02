@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import { Formik, Form, Field } from "formik";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import './header.css'
+import './content.css'
+import './article.css'
+
+const App = () =>{
+
+  const [photos, setPhotos] = useState([]);
+
+  const open = url => window.open(url);
+
+  const handleSubmit = async (values) =>{
+    // llamar a la API
+    const response = await fetch(
+      `https://api.unsplash.com/search/photos?per_page=20&query=${values.search}`,
+      {
+        headers: {
+          'Authorization': 'Client-ID UHNgoCTzZlUnzW2awPKFb50bKrNSRvUyDYCnNwCwyfc'
+        }
+      }
+    )
+    
+    // Convertir a json la respuesta
+    const data = await response.json()
+    
+    // Guardar en el estado
+    setPhotos(data.results)
+}
+    return (
+        <div>
+            <header>
+              <Formik
+                initialValues={{ search: '' }}
+                onSubmit={handleSubmit}
+              >
+                <Form>
+                    <Field name="search" placeholder="Buscar ej: Perro"/>
+                </Form>
+              </Formik>
+          </header>
+          <div className='container'>
+            <div className='center'>
+              {photos.map(photo => 
+                <article key={photo.id} onClick={() => open(photo.links.html)} title='Click para visualizar en unsplash.com'>
+                  <img src={photo.urls.regular} />
+                  <p>{[photo.description, photo.alt_description].join(' - ')}</p>
+                </article>
+              )}
+            </div>
+          </div>
+        </div>
+    )
 }
 
 export default App;
