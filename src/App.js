@@ -42,12 +42,17 @@ const App = () =>{
           </header>
           <div className='container'>
             <div className='center'>
-              {photos.map(photo => 
-                <article key={photo.id} onClick={() => open(photo.links.html)} title='Click para visualizar en unsplash.com'>
-                  <img src={photo.urls.regular} />
-                  <p>{[photo.description, photo.alt_description].join(' - ')}</p>
-                </article>
-              )}
+              {photos.length === 0 ? 
+                (<p>No hay nada para mostrar...</p>)
+              :
+                (photos.map(photo => 
+                  <article key={photo.id} onClick={() => open(photo.links.html)} title='Click para visualizar en unsplash.com'>
+                    <img src={photo.urls.regular} />
+                    <p>{[photo.description, photo.alt_description].join(' - ')}</p>
+                  </article>
+                ))
+              }
+              
             </div>
           </div>
         </div>
